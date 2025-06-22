@@ -1,0 +1,153 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww27120\viewh12620\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \
+LOADBALANCING TYPE APPLICATION\
+\
+#!/bin/bash\
+\
+# --------------------------------------\
+# VARIABLES\
+# --------------------------------------\
+REGION="
+\f1 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 us-west1
+\f0 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 " \\\
+ZONE="
+\f1 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 us-west1-b
+\f0 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 " \\\
+INSTANCE_TEMPLATE_NAME="global" \\\
+INSTANCE_GROUP_NAME="nucleus-serveurweb" \\\
+FIREWALL_RULE_NAME="accept-tcp-rule-911" \\\
+HEALTH_CHECK_NAME="http-basic-check" \\\
+BACKEND_SERVICE_NAME="web-backend-service" \\\
+URL_MAP_NAME="web-map-http" \\\
+PROXY_NAME="http-lb-proxy" \\\
+FORWARDING_RULE_NAME="http-content-rule" \\\
+JUMPHOST_NAME="nucleus-jumphost-680"\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+# --------------------------------------\
+# CONFIGURATION GLOBALE\
+# --------------------------------------\
+gcloud config set compute/region $REGION\
+gcloud config set compute/zone $ZONE\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 # --------------------------------------\
+# VM JUMPHOST\
+# --------------------------------------\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 gcloud compute instances create $JUMPHOST_NAME\\\
+    --zone=$ZONE \\\
+    --tags=network-lb-tag \\\
+    --machine-type=e2-micro \\\
+    --image-family=debian-11 \\\
+    --image-project=debian-cloud\
+\
+# --------------------------------------\
+# SCRIPT DE D\'c9MARRAGE POUR LES INSTANCES\
+# --------------------------------------\
+cat << EOF > startup.sh\
+#! /bin/bash\
+apt-get update\
+apt-get install -y nginx\
+service nginx start\
+sed -i -- 's/nginx/Google Cloud Platform - '"$HOSTNAME"'/' /var/www/html/index.nginx-debian.html\
+EOF\
+\
+# --------------------------------------\
+# MOD\'c8LE D'INSTANCE\
+# --------------------------------------\
+gcloud compute instance-templates create $INSTANCE_TEMPLATE_NAME \\\
+  --machine-type=e2-medium \\\
+  --tags=allow-health-check \\\
+  --image-family=debian-11 \\\
+  --image-project=debian-cloud \\\
+  --metadata-from-file startup-script=startup.sh\
+\
+# --------------------------------------\
+# GROUPE D\'92INSTANCES G\'c9R\'c9ES\
+# --------------------------------------\
+gcloud compute instance-groups managed create $INSTANCE_GROUP_NAME \\\
+  --template=$INSTANCE_TEMPLATE_NAME \\\
+  --size=2 \\\
+  --zone=$ZONE\
+\
+# --------------------------------------\
+# PORT NOMM\'c9 HTTP (port 80)\
+# --------------------------------------\
+gcloud compute instance-groups managed set-named-ports $INSTANCE_GROUP_NAME \\\
+  --named-ports http:80 \\\
+  --zone=$ZONE\
+\
+# --------------------------------------\
+# R\'c8GLE DE PARE-FEU HTTP\
+# --------------------------------------\
+gcloud compute firewall-rules create $FIREWALL_RULE_NAME \\\
+  --allow tcp:80 \\\
+  --target-tags=allow-health-check \\\
+  --description="Allow HTTP traffic to NGINX servers" \\\
+  --network=default\
+\
+# --------------------------------------\
+# V\'c9RIFICATION D\'92\'c9TAT HTTP\
+# --------------------------------------\
+gcloud compute health-checks create http $HEALTH_CHECK_NAME \\\
+  --port 80\
+\
+# --------------------------------------\
+# SERVICE BACKEND + AJOUT DU GROUPE\
+# --------------------------------------\
+gcloud compute backend-services create $BACKEND_SERVICE_NAME \\\
+  --protocol=HTTP \\\
+  --port-name=http \\\
+  --health-checks=$HEALTH_CHECK_NAME \\\
+  --global\
+\
+gcloud compute backend-services add-backend $BACKEND_SERVICE_NAME \\\
+  --instance-group=$INSTANCE_GROUP_NAME \\\
+  --instance-group-zone=$ZONE \\\
+  --global\
+\
+# --------------------------------------\
+# MAPPAGE D\'92URL\
+# --------------------------------------\
+gcloud compute url-maps create $URL_MAP_NAME \\\
+  --default-service=$BACKEND_SERVICE_NAME\
+\
+# --------------------------------------\
+# PROXY HTTP\
+# --------------------------------------\
+gcloud compute target-http-proxies create $PROXY_NAME \\\
+  --url-map=$URL_MAP_NAME\
+\
+# --------------------------------------\
+# R\'c8GLE DE TRANSFERT GLOBALE (PORT 80)\
+# --------------------------------------\
+gcloud compute forwarding-rules create $FORWARDING_RULE_NAME \\\
+  --global \\\
+  --target-http-proxy=$PROXY_NAME \\\
+  --ports=80\
+\
+# --------------------------------------\
+# AFFICHER L'IP PUBLIQUE DU LOAD BALANCER\
+# --------------------------------------\
+gcloud compute forwarding-rules list --filter="name=$FORWARDING_RULE_NAME"\
+\
+\
+#### FIX ERROE ####\
+# Stuck with error - "Please verify the web servers are serving on frontend of HTTP(s) Load Balancer."\
+Run the command on both nginx VM's via SSH\
+\
+sudo su\
+sed -i -- 's/nginx/Google Cloud Platform - '"$HOSTNAME"'/' /var/www/html/index.nginx-debian.html\
+\
+}

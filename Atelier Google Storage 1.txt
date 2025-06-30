@@ -1,0 +1,29 @@
+ATELIER  “Cloud Storage : Qwik Start – CLI/SDK”
+
+
+# Config
+gcloud config set compute/region us-west1
+
+# Ccréer un bucket de stockage
+gcloud storage buckets create gs://1738b44825bb
+
+
+# Importer des objets dans le bucket
+## Telecharger
+curl https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ada_Lovelace_portrait.jpg/800px-Ada_Lovelace_portrait.jpg --output ada.jpg
+
+## Importer
+gcloud storage cp ada.jpg gs://1738b44825bb
+
+## Télécharger depuis le bucket
+gcloud storage cp -r gs://1738b44825bb/ada.jpg .
+
+# Copier dans un dossier dans le bucket ou entre les buckets
+gcloud storage cp gs://1738b44825bb/ada.jpg gs://1738b44825bb/image-folder/
+
+
+# Rendre les objets d'un bucket de stockage accessibles publiquement.
+gsutil acl ch -u AllUsers:R gs://1738b44825bb/ada.jpg
+
+# Supprimer l'accès public
+gsutil acl ch -d AllUsers gs://1738b44825bb/ada.jpg

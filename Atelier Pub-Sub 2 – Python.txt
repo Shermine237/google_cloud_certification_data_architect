@@ -1,0 +1,50 @@
+ATELIER : Pub-Sub : Qwik Start – Python
+
+# Initial config
+sudo apt-get install -y virtualenv
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade google-cloud-pubsub
+git clone https://github.com/googleapis/python-pubsub.git
+cd python-pubsub/samples/snippets
+cat publisher.py
+
+
+# Créer, supprimer et lister des abonnements et des sujets Pub/Sub
+## Create
+python publisher.py -h
+python publisher.py $GOOGLE_CLOUD_PROJECT create MyTopic
+
+## Verify
+python publisher.py $GOOGLE_CLOUD_PROJECT list
+
+## Delete
+
+
+## Create subscription
+python subscriber.py $GOOGLE_CLOUD_PROJECT create MyTopic MySub
+
+## Delete subscription
+
+## List subscribers
+python subscriber.py $GOOGLE_CLOUD_PROJECT list-in-project
+
+## Help subscriber command
+python subscriber.py -h
+
+# Publier des messages dans un sujet
+# Publier
+gcloud pubsub topics publish MyTopic --message "Hello"
+gcloud pubsub topics publish MyTopic --message "Publisher's name is <YOUR NAME>"
+gcloud pubsub topics publish MyTopic --message "Publisher likes to eat <FOOD>"
+gcloud pubsub topics publish MyTopic --message "Publisher thinks Pub/Sub is awesome"
+
+# Apprendre à utiliser un abonnement pull
+
+
+# Extraire tous les messages d’un sujet
+## Create
+
+
+## Extract all
+python subscriber.py $GOOGLE_CLOUD_PROJECT receive MySub

@@ -1,0 +1,46 @@
+ATELIER : Pub/Sub : Qwik Start – Outil de ligne de commande
+
+# Initial config
+gcloud config set run/region europe-west1
+
+
+# Créer, supprimer et lister des abonnements et des sujets Pub/Sub
+## Create
+gcloud pubsub topics create myTopic
+gcloud pubsub topics create Test1
+gcloud pubsub topics create Test2
+
+## Verify
+gcloud pubsub topics list
+
+## Delete
+gcloud pubsub topics delete Test1
+
+## Create subscription
+gcloud  pubsub subscriptions create --topic myTopic mySubscription
+gcloud  pubsub subscriptions create --topic myTopic Test1
+gcloud  pubsub subscriptions create --topic myTopic Test2
+
+## Delete subscription
+gcloud pubsub subscriptions delete Test1
+gcloud pubsub subscriptions delete Test2
+
+# Publier des messages dans un sujet
+# Publier
+gcloud pubsub topics publish myTopic --message "Hello"
+gcloud pubsub topics publish myTopic --message "Le nom du diffuseur est <VOTRE NOM>"
+gcloud pubsub topics publish myTopic --message "Le diffuseur aime manger du/de la <PLAT>"
+gcloud pubsub topics publish myTopic --message "Le diffuseur trouve Pub/Sub génial"
+
+# Apprendre à utiliser un abonnement pull
+gcloud pubsub subscriptions pull mySubscription --auto-ack
+
+# Extraire tous les messages d’un sujet
+## Create
+gcloud pubsub topics publish myTopic --message "Le diffuseur commence à maîtriser Pub/Sub"
+gcloud pubsub topics publish myTopic --message "Le diffuseur se demande si tous les messages vont être extraits"
+gcloud pubsub topics publish myTopic --message "Le diffuseur va devoir faire un test pour le découvrir"
+
+## Extract all
+gcloud pubsub subscriptions pull mySubscription --limit=3
+

@@ -1,0 +1,129 @@
+# Initial config
+gcloud config set run/region REGION
+gcloud config set run/zone ZONE
+
+# Créer un bucket
+gcloud storage buckets create gs://Bucket-Name --location=REGION
+
+# Créer un sujet Pub/Sub
+gcloud pubsub topics create Topic-Name
+
+# Créer la fonction Cloud Run "thumbnail" (vignette)
+## creer un dossier et se deplacer a l'interieur
+mkdir gcf_hello_world && cd $_
+
+## Cree les fichiers
+nano index.js
+```
+const functions = require('@google-cloud/functions-framework');
+const { Storage } = require('@google-cloud/storage');
+const { PubSub } = require('@google-cloud/pubsub');
+const sharp = require('sharp');
+
+functions.cloudEvent('', async cloudEvent => {
+  const event = cloudEvent.data;
+
+  console.log(`Event: ${JSON.stringify(event)}`);
+  console.log(`Hello ${event.bucket}`);
+
+  const fileName = event.name;
+  const bucketName = event.bucket;
+  const size = "64x64";
+  const bucket = new Storage().bucket(bucketName);
+  const topicName = "";
+  const pubsub = new PubSub();
+
+  if (fileName.search("64x64_thumbnail") === -1) {
+    // doesn't have a thumbnail, get the filename extension
+    const filename_split = fileName.split('.');
+    const filename_ext = filename_split[filename_split.length - 1].toLowerCase();
+    const filename_without_ext = fileName.substring(0, fileName.length - filename_ext.length - 1); // fix sub string to remove the dot
+
+    if (filename_ext === 'png' || filename_ext === 'jpg' || filename_ext === 'jpeg') {
+      // only support png and jpg at this point
+      console.log(`Processing Original: gs://${bucketName}/${fileName}`);
+      const gcsObject = bucket.file(fileName);
+      const newFilename = `${filename_without_ext}_64x64_thumbnail.${filename_ext}`;
+      const gcsNewObject = bucket.file(newFilename);
+
+      try {
+        const [buffer] = await gcsObject.download();
+        const resizedBuffer = await sharp(buffer)
+          .resize(64, 64, {
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .toFormat(filename_ext)
+          .toBuffer();
+
+        await gcsNewObject.save(resizedBuffer, {
+          metadata: {
+            contentType: `image/${filename_ext}`,
+          },
+        });
+
+        console.log(`Success: ${fileName} → ${newFilename}`);
+
+        await pubsub
+          .topic(topicName)
+          .publishMessage({ data: Buffer.from(newFilename) });
+
+        console.log(`Message published to ${topicName}`);
+      } catch (err) {
+        console.error(`Error: ${err}`);
+      }
+    } else {
+      console.log(`gs://${bucketName}/${fileName} is not an image I can handle`);
+    }
+  } else {
+    console.log(`gs://${bucketName}/${fileName} already has a thumbnail`);
+  }
+});
+```
+
+nano package.json
+```
+{
+ "name": "thumbnails",
+ "version": "1.0.0",
+ "description": "Create Thumbnail of uploaded image",
+ "scripts": {
+   "start": "node index.js"
+ },
+ "dependencies": {
+   "@google-cloud/functions-framework": "^3.0.0",
+   "@google-cloud/pubsub": "^2.0.0",
+   "@google-cloud/storage": "^6.11.0",
+   "sharp": "^0.32.1"
+ },
+ "devDependencies": {},
+ "engines": {
+   "node": ">=4.3.2"
+ }
+}
+```
+
+## Installer le package
+npm install
+
+## Déployer la fonction
+gcloud functions deploy memories-thumbnail-creator \
+  --gen2 \
+  --runtime=nodejs22 \
+  --region=us-west1 \
+  --source=. \
+  --entry-point=memories-thumbnail-creator \
+  --trigger-topic topic-memories-845 \
+  --stage-bucket qwiklabs-gcp-04-e46e24f3d03a-bucket \
+  --service-account qwiklabs-gcp-04-e46e24f3d03a@qwiklabs-gcp-04-e46e24f3d03a.iam.gserviceaccount.com \
+  --allow-unauthenticated
+
+# Supprimer l'accès de l'ingénieur cloud précédent
+## Afficher les utilisateurs
+gcloud projects get-iam-policy PROJECT_ID
+
+## Supprimer les access d'un utilisateur
+gcloud projects remove-iam-policy-binding PROJECT_ID \
+  --member='user:USERNAME' \
+  --role='roles/viewer'
+

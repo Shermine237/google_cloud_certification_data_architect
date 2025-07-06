@@ -1,0 +1,44 @@
+Principes de base de Terraform 
+
+# Initial config
+gcloud config set run/region us-east1
+gcloud config set run/zone us-east1-c
+
+# Installer Terraform à partir de binaires d'installation
+## Creer le fichier
+nano instance.tf
+```
+resource "google_compute_instance" "terraform" {
+  project      = "qwiklabs-gcp-03-34293d1b4166"
+  name         = "terraform"
+  machine_type = "e2-medium"
+  zone         = "us-east1-c"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+    }
+  }
+}
+```
+
+## Initialiser
+terraform init
+
+## Créer un plan d’execution
+terraform plan
+
+## Executer
+terraform apply
+
+# Créer une infrastructure d'instances de VM à l'aide de Terraform
+(Terraform la cree la VM pour nous, grace a notre fichier .tf)
+
+# Verifier
+

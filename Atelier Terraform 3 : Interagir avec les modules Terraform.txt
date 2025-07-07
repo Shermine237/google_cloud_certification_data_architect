@@ -1,1 +1,24 @@
+Interagir avec les modules Terraform
+
+# Initial config
+gcloud config set run/region us-east1
+gcloud config set run/zone us-east1-c
+
+# Utiliser un module du registre
+## Créer une configuration Terraform
+git clone https://github.com/terraform-google-modules/terraform-google-network
+cd terraform-google-network
+git checkout tags/v6.0.1 -b v6.0.1
+
+## Customiser (utiliser un  exemple)
+nano examples/simple_project/main.tf
+
+### Définir les valeurs des variables d'entrée du module
+
+    network_name : le nom du réseau créé
+    project_id : l'ID du projet dans lequel le VPC sera créé
+    subnets : la liste des sous-réseaux créés
+
+# Créer un module
+
 

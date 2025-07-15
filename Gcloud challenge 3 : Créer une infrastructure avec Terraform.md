@@ -200,7 +200,7 @@ resource "google_compute_instance" "tf-instance-2" {
 }
 
 resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
-  name         = "<FILL IN INSTANCE 3 NAME>"
+  name         = "tf-instance-322998"
   machine_type = "e2-standard-2"
   zone         = var.zone
   allow_stopping_for_update = true

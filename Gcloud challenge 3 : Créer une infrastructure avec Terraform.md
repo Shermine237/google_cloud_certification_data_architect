@@ -199,7 +199,7 @@ resource "google_compute_instance" "tf-instance-2" {
   }
 }
 
-resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
+resource "google_compute_instance" "tf-instance-322998" {
   name         = "tf-instance-322998"
   machine_type = "e2-standard-2"
   zone         = var.zone
@@ -233,8 +233,8 @@ terraform apply
 ```
 Remove the _tf-instance-3_ resource from the _instances.tf_ file. Delete the following code chunk from the file.
 ```
-resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
-  name         = "<FILL IN INSTANCE 3 NAME>"
+resource "google_compute_instance" "tf-instance-322998" {
+  name         = "tf-instance-322998"
   machine_type = "e2-standard-2"
   zone         = var.zone
   allow_stopping_for_update = true

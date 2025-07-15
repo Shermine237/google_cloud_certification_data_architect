@@ -25,11 +25,11 @@ cd
 Add the following to the each _variables.tf_ file, and fill in the _GCP Project ID_:
 ```
 variable "region" {
- default = "us-east1"
+ default = "us-east4"
 }
 
 variable "zone" {
- default = "us-east1-d"
+ default = "us-east4-b"
 }
 
 variable "project_id" {

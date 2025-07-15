@@ -224,7 +224,7 @@ terraform apply
 <br/> **TASK 4: Taint and destroy resources** <br/>
 Taint the _tf-instance-3_ resource by running the following command, and fill in your _Instance 3 ID_:
 ```
-terraform taint module.instances.google_compute_instance.<FILL IN INSTANCE 3 NAME>
+terraform taint module.instances.google_compute_instance.tf-instance-322998
 ```
 Run the following commands to apply the changes:
 ```

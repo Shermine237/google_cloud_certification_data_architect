@@ -25,15 +25,15 @@ cd
 Add the following to the each _variables.tf_ file, and fill in the _GCP Project ID_:
 ```
 variable "region" {
- default = "us-east4"
+ default = "us-east1"
 }
 
 variable "zone" {
- default = "us-east4-b"
+ default = "us-east1-b"
 }
 
 variable "project_id" {
- default = "qwiklabs-gcp-04-c2b14b0b1b21"
+ default = "qwiklabs-gcp-00-bf37e513c820"
 }
 ```
 Add the following to the _main.tf_ file:
@@ -126,7 +126,7 @@ terraform apply
 Add the following code to the _modules/storage/storage.tf_ file, and fill in the _Bucket Name_:
 ```
 resource "google_storage_bucket" "storage-bucket" {
-  name          = "tf-bucket-064258"
+  name          = "tf-bucket-891407"
   location      = "US"
   force_destroy = true
   uniform_bucket_level_access = true
@@ -147,7 +147,7 @@ Next, update the _main.tf_ file so that the terraform block looks like the follo
 ```
 terraform {
   backend "gcs" {
-    bucket  = "tf-bucket-064258"
+    bucket  = "tf-bucket-891407"
  prefix  = "terraform/state"
   }
   required_providers {
@@ -199,8 +199,8 @@ resource "google_compute_instance" "tf-instance-2" {
   }
 }
 
-resource "google_compute_instance" "tf-instance-322998" {
-  name         = "tf-instance-322998"
+resource "google_compute_instance" "tf-instance-254033" {
+  name         = "tf-instance-254033"
   machine_type = "e2-standard-2"
   zone         = var.zone
   allow_stopping_for_update = true
@@ -233,8 +233,8 @@ terraform apply
 ```
 Remove the _tf-instance-3_ resource from the _instances.tf_ file. Delete the following code chunk from the file.
 ```
-resource "google_compute_instance" "tf-instance-322998" {
-  name         = "tf-instance-322998"
+resource "google_compute_instance" "tf-instance-254033" {
+  name         = "tf-instance-254033"
   machine_type = "e2-standard-2"
   zone         = var.zone
   allow_stopping_for_update = true
@@ -262,7 +262,7 @@ module "network" {
     version = "10.0.0"
 
     project_id   = var.project_id
-    network_name = "tf-vpc-997448"
+    network_name = "tf-vpc-434763"
     routing_mode = "GLOBAL"
 
     subnets = [
@@ -302,7 +302,7 @@ resource "google_compute_instance" "tf-instance-1" {
   }
 
   network_interface {
- network = "tf-vpc-997448"
+ network = "tf-vpc-434763"
     subnetwork = "subnet-01"
   }
 }
@@ -320,7 +320,7 @@ resource "google_compute_instance" "tf-instance-2" {
   }
 
   network_interface {
- network = "tf-vpc-997448"
+ network = "tf-vpc-434763"
     subnetwork = "subnet-02"
   }
 }
@@ -335,7 +335,7 @@ Add the following resource to the _main.tf_ file, fill in the _GCP Project ID_ a
 ```
 resource "google_compute_firewall" "tf-firewall" {
   name    = "tf-firewall"
- network = "projects/qwiklabs-gcp-04-c2b14b0b1b21/global/networks/tf-vpc-997448"
+ network = "projects/qwiklabs-gcp-00-bf37e513c820/global/networks/tf-vpc-434763"
 
   allow {
     protocol = "tcp"

@@ -259,10 +259,10 @@ Copy and paste the following to the end of _main.tf_ file, fill in _Version Numb
 ```
 module "vpc" {
     source  = "terraform-google-modules/network/google"
-    version = "~> <FILL IN VERSION NUMBER>"
+    version = "~> 10.0.0"
 
     project_id   = var.project_id
-    network_name = "<FILL IN NETWORK NAME>"
+    network_name = "tf-vpc-997448"
     routing_mode = "GLOBAL"
 
     subnets = [
@@ -302,7 +302,7 @@ resource "google_compute_instance" "tf-instance-1" {
   }
 
   network_interface {
- network = "<FILL IN NETWORK NAME>"
+ network = "tf-vpc-997448"
     subnetwork = "subnet-01"
   }
 }
@@ -320,7 +320,7 @@ resource "google_compute_instance" "tf-instance-2" {
   }
 
   network_interface {
- network = "<FILL IN NETWORK NAME>"
+ network = "tf-vpc-997448"
     subnetwork = "subnet-02"
   }
 }

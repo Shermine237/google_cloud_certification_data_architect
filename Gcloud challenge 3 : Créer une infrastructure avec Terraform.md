@@ -292,7 +292,7 @@ Navigate to _modules/instances/instances.tf_. Replace the entire contents of the
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
   machine_type = "e2-standard-2"
-  zone         = var.region
+  zone         = var.zone
   allow_stopping_for_update = true
 
   boot_disk {
@@ -310,7 +310,7 @@ resource "google_compute_instance" "tf-instance-1" {
 resource "google_compute_instance" "tf-instance-2" {
   name         = "tf-instance-2"
   machine_type = "e2-standard-2"
-  zone         = var.region
+  zone         = var.zone
   allow_stopping_for_update = true
 
   boot_disk {

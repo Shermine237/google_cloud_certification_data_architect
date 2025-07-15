@@ -335,7 +335,7 @@ Add the following resource to the _main.tf_ file, fill in the _GCP Project ID_ a
 ```
 resource "google_compute_firewall" "tf-firewall" {
   name    = "tf-firewall"
- network = "projects/<FILL IN PROJECT_ID>/global/networks/<FILL IN NETWORK NAME>"
+ network = "projects/qwiklabs-gcp-04-c2b14b0b1b21/global/networks/tf-vpc-997448"
 
   allow {
     protocol = "tcp"

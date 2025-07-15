@@ -94,7 +94,7 @@ resource "google_compute_instance" "tf-instance-2" {
 
   boot_disk {
     initialize_params {
-      image = "debian-11-bullseye-v20250709"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 

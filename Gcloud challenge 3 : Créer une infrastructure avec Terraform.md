@@ -147,7 +147,7 @@ Next, update the _main.tf_ file so that the terraform block looks like the follo
 ```
 terraform {
   backend "gcs" {
-    bucket  = var.project_id
+    bucket  = "tf-bucket-064258"
  prefix  = "terraform/state"
   }
   required_providers {

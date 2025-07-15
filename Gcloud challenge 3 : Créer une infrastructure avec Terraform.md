@@ -1,4 +1,4 @@
-## Automating Infrastructure on Google Cloud with Terraform: Challenge Lab ##
+## Automating Infrastructure on Google Cloud with Terraform: Challenge Lab : UPDATE 2025 ##
 
 **Setup : Create the configuration files** <br/>
 Make the empty files and directories in _Cloud Shell_ or the _Cloud Shell Editor_.

@@ -126,7 +126,7 @@ terraform apply
 Add the following code to the _modules/storage/storage.tf_ file, and fill in the _Bucket Name_:
 ```
 resource "google_storage_bucket" "storage-bucket" {
-  name          = tf-bucket-064258
+  name          = "tf-bucket-064258"
   location      = "US"
   force_destroy = true
   uniform_bucket_level_access = true

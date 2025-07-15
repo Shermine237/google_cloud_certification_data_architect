@@ -33,7 +33,7 @@ variable "zone" {
 }
 
 variable "project_id" {
- default = "<FILL IN PROJECT ID>"
+ default = "qwiklabs-gcp-04-c2b14b0b1b21"
 }
 ```
 Add the following to the _main.tf_ file:

@@ -126,7 +126,7 @@ terraform apply
 Add the following code to the _modules/storage/storage.tf_ file, and fill in the _Bucket Name_:
 ```
 resource "google_storage_bucket" "storage-bucket" {
-  name          = "<FILL IN BUCKET NAME>"
+  name          = var.project_id
   location      = "US"
   force_destroy = true
   uniform_bucket_level_access = true
@@ -147,13 +147,13 @@ Next, update the _main.tf_ file so that the terraform block looks like the follo
 ```
 terraform {
   backend "gcs" {
-    bucket  = "<FILL IN PROJECT ID>"
+    bucket  = var.project_id
  prefix  = "terraform/state"
   }
   required_providers {
     google = {
       source = "hashicorp/google"
-      version = "3.55.0"
+      version = "6.43.0"
     }
   }
 }
@@ -167,13 +167,13 @@ Navigate to _modules/instances/instance.tf_. Replace the entire contents of the 
 ```
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
-  machine_type = "n1-standard-2"
-  zone         = "us-central1-a"
+  machine_type = "e2-standard-2"
+  zone         = var.zone
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 
@@ -184,13 +184,13 @@ resource "google_compute_instance" "tf-instance-1" {
 
 resource "google_compute_instance" "tf-instance-2" {
   name         = "tf-instance-2"
-  machine_type = "n1-standard-2"
-  zone         = "us-central1-a"
+  machine_type = "e2-standard-2"
+  zone         = var.zone
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 
@@ -201,13 +201,13 @@ resource "google_compute_instance" "tf-instance-2" {
 
 resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
   name         = "<FILL IN INSTANCE 3 NAME>"
-  machine_type = "n1-standard-2"
-  zone         = "us-central1-a"
+  machine_type = "e2-standard-2"
+  zone         = var.zone
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 
@@ -235,13 +235,13 @@ Remove the _tf-instance-3_ resource from the _instances.tf_ file. Delete the fol
 ```
 resource "google_compute_instance" "<FILL IN INSTANCE 3 NAME>" {
   name         = "<FILL IN INSTANCE 3 NAME>"
-  machine_type = "n1-standard-2"
-  zone         = "us-central1-a"
+  machine_type = "e2-standard-2"
+  zone         = var.zone
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 
@@ -261,7 +261,7 @@ module "vpc" {
     source  = "terraform-google-modules/network/google"
     version = "~> <FILL IN VERSION NUMBER>"
 
-    project_id   = "qwiklabs-gcp-04-f2c1c01a09d3"
+    project_id   = var.project_id
     network_name = "<FILL IN NETWORK NAME>"
     routing_mode = "GLOBAL"
 
@@ -269,12 +269,12 @@ module "vpc" {
         {
             subnet_name           = "subnet-01"
             subnet_ip             = "10.10.10.0/24"
-            subnet_region         = "us-central1"
+            subnet_region         = var.region
         },
         {
             subnet_name           = "subnet-02"
             subnet_ip             = "10.10.20.0/24"
-            subnet_region         = "us-central1"
+            subnet_region         = var.region
             subnet_private_access = "true"
             subnet_flow_logs      = "true"
             description           = "This subnet has a description"
@@ -291,13 +291,13 @@ Navigate to _modules/instances/instances.tf_. Replace the entire contents of the
 ```
 resource "google_compute_instance" "tf-instance-1" {
   name         = "tf-instance-1"
-  machine_type = "n1-standard-2"
-  zone         = "us-central1-a"
+  machine_type = "e2-standard-2"
+  zone         = var.region
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 
@@ -309,13 +309,13 @@ resource "google_compute_instance" "tf-instance-1" {
 
 resource "google_compute_instance" "tf-instance-2" {
   name         = "tf-instance-2"
-  machine_type = "n1-standard-2"
-  zone         = "us-central1-a"
+  machine_type = "e2-standard-2"
+  zone         = var.region
   allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-10"
+      image = "debian-cloud/debian-11-bullseye-v20250709"
     }
   }
 

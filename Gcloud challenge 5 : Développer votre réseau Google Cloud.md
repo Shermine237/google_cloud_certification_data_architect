@@ -113,36 +113,61 @@ sed -i s/username_goes_here/wp_user/g wp-env.yaml
 sed -i s/password_goes_here/stormwind_rules/g wp-env.yaml
 ```
 
+### Apply changed wp-env.yaml file:
+```bash
+kubectl create -f wp-env.yaml
+```
+## To create key for service account, and add to Kubernetes environment
+```bash
 gcloud iam service-accounts keys create key.json \
     --iam-account=cloud-sql-proxy@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com
-
 kubectl create secret generic cloudsql-instance-credentials \
     --from-file key.json
+```
 
-# Retrieve connection name
-
+## Retrieve connection name
+```bash
 gcloud sql instances describe griffin-dev-db --format='value(connectionName)'
+```
 
-# Update wp-deployment with your sql instance connection name
-# Review changes of those files usign ‘cat’
-# Deploy WordPress to Kubernetes
+## Update wp-deployment with your sql instance connection name
+```bash
+sed -i s/YOUR_SQL_INSTANCE/$(gcloud sql instances describe griffin-dev-db --format="value(connectionName)")/g wp-deployment.yaml
+```
+## Deploy WordPress to Kubernetes
+```bash
+kubectl create -f wp-deployment.yaml
+kubectl create -f wp-service.yaml
+```
 
-kubectl apply -f wp-env.yaml
-kubectl apply -f wp-deployment.yaml
-kubectl apply -f wp-service.yaml
+### Verify and copy the EXTERNAL-IP for wordpress LoadBalancer
+```bash
+kubectl get deployments
+kubectl get services
+```
+## Enable monitoring : Uptime check
+An uptime check verifies that the WordPress development site is up and available.
 
-# Set variable for WP Site URL
+    - In Google Cloud console, navigate to Navigation menu > Monitoring
+    - In the left pane of Cloud Monitoring, click on Uptime checks, and then click Create Uptime Check.
+    For Protocol, leave as HTTP.
+    For Resource Type, leave as URL.
+    For Hostname, paste the External-IP of the wordpress LoadBalancer.
+    For Path, enter /.
+    - Click Continue.
+    - In Response Validation, accept the defaults and then click Continue.
+    - In Alert & Notification, accept the defaults, and then click Continue.
+    - For Title, type WPress Uptime Check.
+    - Click Test to verify that your uptime check can connect to the resource.
+    - When you see a green check mark everything can connect.
+    - Click Create.
 
-export WORDPRESS_SITE_URL="IPgoesHere"
-
-# Uptime check
-
-gcloud monitoring uptime create griffin-dev-wp-uptime-check \
-    --display-name="Griffin Dev WP Uptime Check" \
-    --resource-labels=host=$WORDPRESS_EXTERNAL_IP
-
-# Provide access for another engineer
-
+## Provide access for another engineer
+```bash
 gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
     --member="user:$ADDITIONAL_ENGINEER_EMAIL" \
     --role="roles/editor"
+```
+
+## Done :)
+

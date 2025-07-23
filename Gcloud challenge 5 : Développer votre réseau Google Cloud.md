@@ -1,11 +1,13 @@
-# Variables
+# Develop your Google Cloud Network: Challenge Lab Solution
+
+## Variables
 ```bash
 export REGION=<your-region-here>
 export ZONE=<your-zone-here>
 export ADDITIONAL_ENGINEER_EMAIL=<your additional-student-here>
 ```
 
-# Create Dev VPC
+## Create Dev VPC
 ```bash
 gcloud compute networks create griffin-dev-vpc --subnet-mode=custom
 ```
@@ -22,7 +24,7 @@ gcloud compute networks subnets create griffin-dev-mgmt \
 --region=$REGION
 ```
 
-# Create Prod VPC
+## Create Prod VPC
 ```bash
 gcloud compute networks create griffin-prod-vpc --subnet-mode=custom
 ```
@@ -39,7 +41,7 @@ gcloud compute networks subnets create griffin-prod-mgmt \
     --region=$REGION
 ```
 
-# Create bastion host
+## Create bastion host
 ```bash
 gcloud compute instances create griffin-bastion \
     --machine-type=e2-medium \
@@ -55,7 +57,7 @@ gcloud compute instances create griffin-bastion \
     --image-project=debian-cloud
 ```
 
-# Firewalls
+### Firewalls
 ```bash
 gcloud compute firewall-rules create griffin-dev-allow-ssh \
     --network=griffin-dev-vpc \
@@ -73,7 +75,7 @@ gcloud compute firewall-rules create griffin-prod-allow-ssh \
     --description="Allow SSH access to bastion host in production"
 ```
 
-# Create Cloud SQL instances
+## Create Cloud SQL instances
 ```bash
 gcloud sql instances create griffin-dev-db \
     --database-version=MYSQL_5_7 \
@@ -89,7 +91,7 @@ FLUSH PRIVILEGES;
 EOF
 ```
 
-# Create Kubernetes Cluster
+## Create Kubernetes Cluster
 ```bash
 gcloud container clusters create griffin-dev \
     --zone=$ZONE \
@@ -99,13 +101,17 @@ gcloud container clusters create griffin-dev \
     --subnetwork=griffin-dev-wp
 ```
 
-# Copy configuration files
+## Copy configuration files
 ```bash
 gsutil cp -r gs://cloud-training/gsp321/wp-k8s . && cd wp-k8s
 ```
 
-# Update wp-env to use proper user and password
-# Setup secrets and volumes
+## Update wp-env to use proper user and password
+### To configure username to wp_user and password to stormwind_rules, you can use sed command :
+```bash
+sed -i s/username_goes_here/wp_user/g wp-env.yaml
+sed -i s/password_goes_here/stormwind_rules/g wp-env.yaml
+```
 
 gcloud iam service-accounts keys create key.json \
     --iam-account=cloud-sql-proxy@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com

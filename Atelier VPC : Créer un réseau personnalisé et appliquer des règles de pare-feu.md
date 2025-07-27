@@ -2,10 +2,10 @@
 
 ## Initial config
 ```bash
-gcloud config set compute/zone "Zone"
+gcloud config set compute/zone "<ZONE>"
 export ZONE=$(gcloud config get compute/zone)
 
-gcloud config set compute/region "Region"
+gcloud config set compute/region "<REGION>"
 export REGION=$(gcloud config get compute/region)
 ```
 
@@ -19,7 +19,7 @@ gcloud compute networks create taw-custom-network --subnet-mode custom
 ```bash
 gcloud compute networks subnets create subnet-<REGION> \
    --network taw-custom-network \
-   --region Region \
+   --region <REGION> \
    --range 10.0.0.0/16
 ```
 
@@ -27,7 +27,7 @@ gcloud compute networks subnets create subnet-<REGION> \
 ```bash
 gcloud compute networks subnets create subnet-<REGION> \
    --network taw-custom-network \
-   --region Region \
+   --region <REGION> \
    --range 10.1.0.0/16
 ```
 
@@ -35,7 +35,7 @@ gcloud compute networks subnets create subnet-<REGION> \
 ```bash
 gcloud compute networks subnets create subnet-<REGION> \
    --network taw-custom-network \
-   --region Region \
+   --region <REGION> \
    --range 10.2.0.0/16
 ```
 

@@ -15,7 +15,7 @@ export REGION=$(gcloud config get compute/region)
 gcloud compute networks create taw-custom-network --subnet-mode custom
 ```
 
-### Créez "subnet-<REGION>" avec un préfixe IP
+### Créez "subnet-`<REGION>`" avec un préfixe IP
 ```bash
 gcloud compute networks subnets create subnet-<REGION> \
    --network taw-custom-network \
@@ -23,7 +23,7 @@ gcloud compute networks subnets create subnet-<REGION> \
    --range 10.0.0.0/16
 ```
 
-### Créez "subnet-<REGION>" avec un préfixe IP
+### Créez "subnet-`<REGION>`" avec un préfixe IP
 ```bash
 gcloud compute networks subnets create subnet-<REGION> \
    --network taw-custom-network \
@@ -31,7 +31,7 @@ gcloud compute networks subnets create subnet-<REGION> \
    --range 10.1.0.0/16
 ```
 
-### Créez "subnet-<REGION>" avec un préfixe IP
+### Créez "subnet-`<REGION>`" avec un préfixe IP
 ```bash
 gcloud compute networks subnets create subnet-<REGION> \
    --network taw-custom-network \

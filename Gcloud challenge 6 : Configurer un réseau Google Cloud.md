@@ -60,3 +60,21 @@ gcloud compute firewall-rules create otgy-firewall-icmp \
 --priority=1000
 ```
 
+## Tâche 3 : Ajouter des VM à votre réseau
+
+### Créez une instance nommée us-test-01 
+```bash
+gcloud compute instances create us-test-01 \
+--subnet subnet-a-pwqh \
+--zone us-east4-b \
+--machine-type e2-standard-2
+```
+
+### Créez une instance nommée us-test-02 
+```bash
+gcloud compute instances create us-test-01 \
+--subnet subnet-b-2kr5 \
+--zone europe-west4-c \
+--machine-type e2-standard-2
+```
+

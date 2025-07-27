@@ -72,7 +72,7 @@ gcloud compute instances create us-test-01 \
 
 ### Créez une instance nommée us-test-02 
 ```bash
-gcloud compute instances create us-test-01 \
+gcloud compute instances create us-test-02 \
 --subnet subnet-b-2kr5 \
 --zone europe-west4-c \
 --machine-type e2-standard-2

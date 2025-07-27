@@ -50,7 +50,27 @@ ping -c 3 <us-test-02-external-ip-address>
 ```
 Vous pouvez identifier l'adresse IP externe de vos machines virtuelles dans le champ "Adresse IP externe" de l'onglet du navigateur Compute Engine
 
+> Exécutez cette commande pour lancer un écho ICMP vers us-test-03, en ajoutant dans la ligne l'adresse IP externe de la VM :
+```bash
+ping -c 3 <us-test-03-external-ip-address>
+```
 
+> Vérifiez maintenant que la connexion SSH vers les instances us-test-02 et us-test-03 fonctionne également. Lancez un écho ICMP vers us-test-01
+
+## Utiliser une commande ping pour mesurer la latence
+> Vous allez utiliser la commande ping pour mesurer la latence entre ces régions. Exécutez la commande suivante après avoir ouvert une fenêtre SSH sur l'instance us-test-01 :
+```bash
+ping -c 3 us-test-02.<ZONE>
+```
+
+## Exécuter les tests Traceroute et de performances
+> Pour cette étape, utilisez les VM us-test-01 et us-test-02, et connectez-vous en SSH à chacune d'elles.
+
+> Installez les outils de performances dans la fenêtre SSH de l'instance us-test-01 :
+```bash
+sudo apt-get update
+sudo apt-get -y install traceroute mtr tcpdump iperf whois host dnsutils siege
+```
 
 
 

@@ -1,0 +1,56 @@
+# Tester la latence du réseau entre les VM
+
+## Initial config
+```bash
+gcloud config set compute/zone "<ZONE>"
+export ZONE=$(gcloud config get compute/zone)
+
+gcloud config set compute/region "<REGION>"
+export REGION=$(gcloud config get compute/region)
+```
+
+## Connecter les VM et vérifier la latence
+
+### Exécutez cette commande pour créer une instance nommée us-test-01 dans le sous-réseau "subnet-`<REGION>`"
+```bash
+gcloud compute instances create us-test-01 \
+--subnet subnet-<REGION> \
+--zone ZONE \
+--machine-type e2-standard-2 \
+--tags ssh,http,rules
+```
+Veillez à bien noter l'adresse IP externe : elle vous servira plus tard au cours de cet atelier
+
+### Vous allez maintenant créer les VM us-test-02 et us-test-03 dans les sous-réseaux
+```bash
+gcloud compute instances create us-test-02 \
+--subnet subnet-<REGION> \
+--zone ZONE \
+--machine-type e2-standard-2 \
+--tags ssh,http,rules
+```
+```bash
+gcloud compute instances create us-test-03 \
+--subnet subnet-<REGION> \
+--zone ZONE \
+--machine-type e2-standard-2 \
+--tags ssh,http,rules
+```
+
+## Vérifier la connexion à votre VM
+
+Revenez à la console et accédez à Compute Engine.
+> Cliquez sur le bouton SSH correspondant à l'instance us-test-01.
+>> Cette action entraîne l'ouverture d'une connexion SSH vers l'instance dans une nouvelle fenêtre.
+
+> Dans la fenêtre SSH de l'instance us-test-01, saisissez la commande suivante pour lancer un écho ICMP (Internet Control Message Protocol) vers us-test-02, en ajoutant dans la ligne l'adresse IP externe de la VM :
+
+```bash
+ping -c 3 <us-test-02-external-ip-address>
+```
+Vous pouvez identifier l'adresse IP externe de vos machines virtuelles dans le champ "Adresse IP externe" de l'onglet du navigateur Compute Engine
+
+
+
+
+
